@@ -8,8 +8,7 @@ app = Flask(__name__)
 app.secret_key = 'jose'
 api = Api(app)
 
-
-jwt = JWT(app, authenticate, identity)# JWT creates a new end point /auth
+jwt = JWT(app, authenticate, identity)  # JWT creates a new end point /auth
 # we send /auth a username/password and that is sent to the authenticate function
 # if the u/p is valid the authenticate returns the user and that becomes the identity
 # the auth endpoint returns a JWT token
@@ -37,12 +36,18 @@ class Item(Resource):
 
     def post(self, name):
         if next(filter(lambda x: x['name'] == name, items), None):
-            return {'message': f"An item with name: \'{name}\' already exists"}, 400 # bad request
+            return {'message': f"An item with name: \'{name}\' already exists"}, 400  # bad request
 
         data = request.get_json()
         item = {'name': name, 'price': data['price']}
         items.append(item)
         return item, 201  # created code
+
+    def delete(self, name):
+        global items
+        # this will overwrite the items by a new list that does not contain the name we want deleted
+        items = list(filter(lambda x: x['name'] != name, items))
+        return {'message': 'Item deleted'}
 
 
 class Items(Resource):
