@@ -24,6 +24,13 @@ items = []
 
 
 class Item(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('price',
+                        type=float,
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
+
     @jwt_required()
     def get(self, name):
         item = next(filter(lambda x: x['name'] == name, items), None)
@@ -34,18 +41,13 @@ class Item(Resource):
         #         return item
         # return {"item": None}, 404  # error code for not found is 404
 
+
     def post(self, name):
         if next(filter(lambda x: x['name'] == name, items), None):
             return {'message': f"An item with name: \'{name}\' already exists"}, 400  # bad request
 
         # data = request.get_json()
-        parser = reqparse.RequestParser()
-        parser.add_argument('price',
-                            type=float,
-                            required=True,
-                            help="This field cannot be left blank!"
-                            )
-        data = parser.parse_args()
+        data = Item.parser.parse_args()
 
         item = {'name': name, 'price': data['price']}
         items.append(item)
@@ -58,17 +60,18 @@ class Item(Resource):
         return {'message': 'Item deleted'}
 
     def put(self, name):
-        parser = reqparse.RequestParser()  # run the request through it
+        # parser = reqparse.RequestParser()  # run the request through it
         # list all possible arguments that we will be keeping/using
         # if the argument is not listed in the parser.add_arguments, it will be erased and not saved
-        parser.add_argument('price',
-                            type=float,
-                            required=True,
-                            help="This field cannot be left blank!"
-                            )
+        # parser.add_argument('price',
+        #                     type=float,
+        #                     required=True,
+        #                     help="This field cannot be left blank!"
+        #                     )
 
         # data = request.get_json()
-        data = parser.parse_args()
+        # we moved the previous parser setup and add_arguments up to the Item class level
+        data = Item.parser.parse_args()
 
         item = next(filter(lambda x: x['name'] == name, items), None)
         if item is None:
