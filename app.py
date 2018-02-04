@@ -38,7 +38,15 @@ class Item(Resource):
         if next(filter(lambda x: x['name'] == name, items), None):
             return {'message': f"An item with name: \'{name}\' already exists"}, 400  # bad request
 
-        data = request.get_json()
+        # data = request.get_json()
+        parser = reqparse.RequestParser()
+        parser.add_argument('price',
+                            type=float,
+                            required=True,
+                            help="This field cannot be left blank!"
+                            )
+        data = parser.parse_args()
+
         item = {'name': name, 'price': data['price']}
         items.append(item)
         return item, 201  # created code
