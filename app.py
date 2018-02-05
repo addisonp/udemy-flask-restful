@@ -4,6 +4,8 @@ from flask_jwt import JWT, jwt_required
 
 from security import authenticate, identity
 
+from user import UserRegister
+
 app = Flask(__name__)
 app.secret_key = 'jose'
 api = Api(app)
@@ -40,7 +42,6 @@ class Item(Resource):
         #     if item['name'] == name:
         #         return item
         # return {"item": None}, 404  # error code for not found is 404
-
 
     def post(self, name):
         if next(filter(lambda x: x['name'] == name, items), None):
@@ -89,5 +90,6 @@ class Items(Resource):
 
 api.add_resource(Item, '/item/<string:name>')
 api.add_resource(Items, '/items')
+api.add_resource(UserRegister, '/register')
 
 app.run(port=5000, debug=True)
