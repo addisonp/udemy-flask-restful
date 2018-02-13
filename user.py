@@ -13,7 +13,7 @@ class User:
         cursor = connection.cursor()
 
         query = "SELECT * FROM users WHERE username=?"
-        # need to pass a tuple (value,)
+        # parameters need to be passed in as a tuple (value,)
         result = cursor.execute(query, (username,))
 
         row = result.fetchone()
@@ -31,7 +31,6 @@ class User:
         cursor = connection.cursor()
 
         query = "SELECT * FROM users WHERE id=?"
-        # need to pass a tuple (value,)
         result = cursor.execute(query, (_id,))
 
         row = result.fetchone()
@@ -69,6 +68,10 @@ class UserRegister(Resource):
         # using the UserRegister.parser
         # which expects a u/p
         data = UserRegister.parser.parse_args()
+
+        if User.find_by_username(data['username']):
+            return {"message": "user with that username already exists"}, 400
+
         # then connect to the database
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()

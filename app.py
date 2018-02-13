@@ -7,7 +7,7 @@ from security import authenticate, identity
 from user import UserRegister
 
 app = Flask(__name__)
-app.secret_key = 'jose'
+app.secret_key =  'joel'
 api = Api(app)
 
 jwt = JWT(app, authenticate, identity)  # JWT creates a new end point /auth
@@ -27,6 +27,7 @@ items = []
 
 class Item(Resource):
     parser = reqparse.RequestParser()
+    # only argument that will be passed is the one listed below
     parser.add_argument('price',
                         type=float,
                         required=True,
