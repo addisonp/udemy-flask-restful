@@ -43,7 +43,7 @@ class Item(Resource):
         try:
             self.insert(item)
         except:
-            return {"message": "An error occurred inserting the item."}, 500 #internal server error
+            return {"message": "An error occurred inserting the item."}, 500  # internal server error
 
         return item, 201  # created code
 
@@ -88,22 +88,30 @@ class Item(Resource):
     def put(self, name):
         data = Item.parser.parse_args()
         item = self.find_by_name(name)
-        updated_item = {'name':name, 'price':data['price']}
+        updated_item = {'name': name, 'price': data['price']}
         if item is None:
             try:
                 self.insert(updated_item)
             except:
-                return {"message":"An error occurred inserting the item."}, 500
+                return {"message": "An error occurred inserting the item."}, 500
         else:
             try:
                 self.update(updated_item)
             except:
-                return {"message":"An error occurred updating the item."}, 500
+                return {"message": "An error occurred updating the item."}, 500
         return updated_item
-
-
 
 
 class Items(Resource):
     def get(self):
-        return {"items": items}
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
+
+        query = "SELECT * FROM items"
+        result = cursor.execute(query)
+        rows = result.fetchall()
+        connection.close()
+        items = []
+        for row in rows:
+            items.append({'name': row[0], 'price': row[1]})
+        return {'items': items}
