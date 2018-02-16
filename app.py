@@ -8,6 +8,9 @@ from security import authenticate, identity
 from resources.user import UserRegister
 
 app = Flask(__name__)
+# specify config property for SQLAlchemy
+# turn off the Flask-Sqlahcmey tracking off, but Sqlalchemy tracker is still on
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'joel'
 api = Api(app)
 
@@ -27,4 +30,7 @@ api.add_resource(Items, '/items')
 api.add_resource(UserRegister, '/register')
 
 if __name__ == '__main__':
+    from db import db
+    # import our flask app into the db
+    db.init_app(app)
     app.run(port=5000, debug=True)
