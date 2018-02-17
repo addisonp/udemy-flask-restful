@@ -8,6 +8,7 @@ from security import authenticate, identity
 from resources.user import UserRegister
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 # specify config property for SQLAlchemy
 # turn off the Flask-Sqlahcmey tracking off, but Sqlalchemy tracker is still on
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
