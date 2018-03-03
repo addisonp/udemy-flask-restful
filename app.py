@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from flask_restful import Api
 from flask_jwt import JWT
@@ -9,7 +11,8 @@ from resources.user import UserRegister
 from resources.store import Store, StoreList
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+# Heroku has the  DATABASE_URL environment variable set
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///data.db')
 # specify config property for SQLAlchemy
 # turn off the Flask-Sqlahcmey tracking off, but Sqlalchemy tracker is still on
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
